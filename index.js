@@ -2,20 +2,14 @@
 require('dotenv').config();
 
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const app = express();
 
 // Middleware para parsear JSON en las solicitudes
 app.use(express.json());
 
 // Configuración de la conexión a MySQL
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    port: process.env.DB_PORT,
-});
+const db = mysql.createConnection(process.env.DATABASE_URL);
 
 // Conectar a la base de datos
 db.connect((err) => {
@@ -42,7 +36,7 @@ app.listen(PORT, () => {
 // ===========================
 
 // Obtener todos los usuarios
-app.get('/usuarios', (req, res) => {
+app.get('/usuario', (req, res) => {
     const sql = 'SELECT * FROM Usuario';
     db.query(sql, (err, results) => {
         if (err) {
@@ -54,7 +48,7 @@ app.get('/usuarios', (req, res) => {
 });
 
 // Crear un nuevo usuario
-app.post('/usuarios', (req, res) => {
+app.post('/usuario', (req, res) => {
     const { nombreUsuario, email } = req.body;
     const sql = 'INSERT INTO Usuario (nombreUsuario, email) VALUES (?, ?)';
     db.query(sql, [nombreUsuario, email], (err, result) => {
@@ -67,7 +61,7 @@ app.post('/usuarios', (req, res) => {
 });
 
 // Actualizar un usuario
-app.put('/usuarios/:id', (req, res) => {
+app.put('/usuario/:id', (req, res) => {
     const { id } = req.params;
     const { nombreUsuario, email } = req.body;
     const sql = 'UPDATE Usuario SET nombreUsuario = ?, email = ? WHERE idUsuario = ?';
@@ -81,7 +75,7 @@ app.put('/usuarios/:id', (req, res) => {
 });
 
 // Eliminar un usuario
-app.delete('/usuarios/:id', (req, res) => {
+app.delete('/usuario/:id', (req, res) => {
     const { id } = req.params;
     const sql = 'DELETE FROM Usuario WHERE idUsuario = ?';
     db.query(sql, [id], (err, result) => {
@@ -95,7 +89,7 @@ app.delete('/usuarios/:id', (req, res) => {
 
 
 // Obtener todos los proyectos
-app.get('/proyectos', (req, res) => {
+app.get('/proyecto', (req, res) => {
     const sql = 'SELECT * FROM Proyecto';
     db.query(sql, (err, results) => {
         if (err) {
@@ -107,7 +101,7 @@ app.get('/proyectos', (req, res) => {
 });
 
 // Crear un nuevo proyecto
-app.post('/proyectos', (req, res) => {
+app.post('/proyecto', (req, res) => {
     const { nombreProyecto, descripcion } = req.body;
     const sql = 'INSERT INTO Proyecto (nombreProyecto, descripcion) VALUES (?, ?)';
     db.query(sql, [nombreProyecto, descripcion], (err, result) => {
@@ -120,7 +114,7 @@ app.post('/proyectos', (req, res) => {
 });
 
 // Actualizar un proyecto
-app.put('/proyectos/:id', (req, res) => {
+app.put('/proyecto/:id', (req, res) => {
     const { id } = req.params;
     const { nombreProyecto, descripcion } = req.body;
     const sql = 'UPDATE Proyecto SET nombreProyecto = ?, descripcion = ? WHERE idProyecto = ?';
@@ -134,7 +128,7 @@ app.put('/proyectos/:id', (req, res) => {
 });
 
 // Eliminar un proyecto
-app.delete('/proyectos/:id', (req, res) => {
+app.delete('/proyecto/:id', (req, res) => {
     const { id } = req.params;
     const sql = 'DELETE FROM Proyecto WHERE idProyecto = ?';
     db.query(sql, [id], (err, result) => {
@@ -147,7 +141,7 @@ app.delete('/proyectos/:id', (req, res) => {
 });
 
 // Obtener todas las tareas
-app.get('/tareas', (req, res) => {
+app.get('/tarea', (req, res) => {
     const sql = 'SELECT * FROM Tarea';
     db.query(sql, (err, results) => {
         if (err) {
@@ -159,7 +153,7 @@ app.get('/tareas', (req, res) => {
 });
 
 // Crear una nueva tarea
-app.post('/tareas', (req, res) => {
+app.post('/tarea', (req, res) => {
     const { descripcion, estado, fechaLimite, usuarioAsignado, proyectoAsociado } = req.body;
     const sql = 'INSERT INTO Tarea (descripcion, estado, fechaLimite, usuarioAsignado, proyectoAsociado) VALUES (?, ?, ?, ?, ?)';
     db.query(sql, [descripcion, estado, fechaLimite, usuarioAsignado, proyectoAsociado], (err, result) => {
@@ -172,7 +166,7 @@ app.post('/tareas', (req, res) => {
 });
 
 // Actualizar una tarea
-app.put('/tareas/:id', (req, res) => {
+app.put('/tarea/:id', (req, res) => {
     const { id } = req.params;
     const { descripcion, estado, fechaLimite, usuarioAsignado, proyectoAsociado } = req.body;
     const sql = 'UPDATE Tarea SET descripcion = ?, estado = ?, fechaLimite = ?, usuarioAsignado = ?, proyectoAsociado = ? WHERE idTarea = ?';
@@ -186,7 +180,7 @@ app.put('/tareas/:id', (req, res) => {
 });
 
 // Eliminar una tarea
-app.delete('/tareas/:id', (req, res) => {
+app.delete('/tarea/:id', (req, res) => {
     const { id } = req.params;
     const sql = 'DELETE FROM Tarea WHERE idTarea = ?';
     db.query(sql, [id], (err, result) => {
